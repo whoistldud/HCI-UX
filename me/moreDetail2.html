@@ -29,13 +29,28 @@
             </svg>
         </button>
     </div>
+    <div class="text-center">
+        <div class="spinner-border" role="status" id = 'spinner' style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 
+    <div class="alert alert-info" role="alert" id='successinfo' style="display: none;">
+        메일 생성을 위한 준비가 완료되었습니다!
+    </div>
     <script>
         function printInput() {
             let str = document.getElementById('moreDetailInput').value;
             document.getElementById('result').innerText = str;
             document.getElementById('result').style.display = 'block'; // 결과를 보이게 함
             document.getElementById('moreDetailInput').value = '';
+
+            document.getElementById('spinner').style.display = 'block';
+            setTimeout(function () {
+                document.getElementById('spinner').style.display = 'none';
+                document.getElementById('successinfo').style.display = 'block';
+
+            }, 1500);
         }
     </script>
 </body>
