@@ -1,4 +1,3 @@
-<!-- [출석문의] 지하철 파업으로 인한 지각 관련-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,6 +53,15 @@
             </svg>
         </button>
     </div>
+    <div class="text-center">
+        <div class="spinner-border" role="status" id = 'spinner' style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div class="alert alert-info" role="alert" id='successinfo' style="display: none;">
+        메일 생성을 위한 준비가 완료되었습니다!
+    </div>
     <script>
         function printInput() {
             const str = document.getElementById('moreDetailInput').value;
@@ -73,10 +81,20 @@
                     const A2 = document.getElementById('moreDetailInput').value;
                     document.getElementById('A2').innerText = A2;
                     document.getElementById('A2').style.display = 'block';
+
+                    // successinfo를 화면에 보여주기
+                    document.getElementById('spinner').style.display = 'block';
+                    setTimeout(function () {
+                        document.getElementById('spinner').style.display = 'none';
+                        document.getElementById('successinfo').style.display = 'block';
+
+                    }, 1500);
                 };
 
                 document.getElementById('moreDetailInput').value = '';
-            }, 2000);
+
+            }, 1500);
+
         }
     </script>
 </body>
