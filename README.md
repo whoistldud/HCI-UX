@@ -1,3 +1,2 @@
-## HCI-UX
-#### 2023년 2학기 'HCI와UX평가' 
-#### 사용성 평가를 위한 프로토타입 개발
+# hci-prototype
+hci prototype 개발

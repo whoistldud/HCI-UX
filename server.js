@@ -6,9 +6,10 @@ const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+app.use(express.static('./'));
+app.get('/bootstrap/css/bootstrap.min.css', (req, res) => {
+    res.type('text/css');
+    res.sendFile(__dirname + '/node_modules/bootstrap/dist/css/bootstrap.min.css');
 });
 
 app.post('/send-email', (req, res) => {
@@ -23,7 +24,7 @@ app.post('/send-email', (req, res) => {
     });
 
     const mailOptions = {
-        from: 'whoistldud@gmail.com',
+        from: 'cherish0rihyun@gmail.com',
         to: toEmail,
         subject: title,
         text: body,

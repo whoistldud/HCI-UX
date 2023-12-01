@@ -1,0 +1,176 @@
+<!-- [성적문의] 시험지 확인 요청 관련 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="row chat" style="height: 290px; position: relative; overflow: hidden;">
+        <div class="row question">
+            <div class="col">
+                <div class="alert alert-primary" role="alert">
+                    확인하고자 하는 시험이 중간고사인지 기말고사인지 알려주세요.
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row answer">
+            <div class="col"></div>
+            <div class="col">
+                <div id="result" class="alert alert-secondary" role="alert" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="input-group mb-3" style="position: absolute; bottom: 0; width: 100%;"> <!-- 수정된 부분: width 추가 -->
+            <input id="moreDetailInput" type="text" class="form-control" placeholder="입력해주세요" aria-describedby="">
+            <button onclick="printInput()" class="btn btn-outline-primary" type="button" id="df">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div class="spinner-border" role="status" id = 'spinner' style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </symbol>
+      </svg>
+
+    <div class="alert alert-info" role="alert" id='successinfo' style="display: none;">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+            <use xlink:href="#check-circle-fill"/></svg>
+        메일 생성을 위한 준비가 완료되었습니다!
+    </div>
+
+    <script>
+        var examInfo = "";
+        // 라디오 버튼이 변경될 때 이벤트 처리
+        document.querySelectorAll('input[name="btnradio"]').forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        // 선택된 라디오 버튼의 값 가져오기
+                        var selectedLanguage = document.querySelector('input[name="btnradio"]:checked').id;
+
+                        // 메일 양식 변경 함수 호출
+                        changeMailFormat(selectedLanguage);
+                    });
+                });
+        
+        // 메일 양식 변경 함수
+        function changeMailFormat(selectedLanguage) {
+            if (selectedLanguage === 'btnradio1') {
+                mailSubject = "[성적 문의] " + major + " " + studentId + " " + name + " 입니다.";
+                mailresult = ""
+                mailresult = "- " + recipientName + " 교수님께. \n\n안녕하세요, " + recipientName + " 교수님.\n\n";
+                mailresult += "저는 " + lecture + "을(를) 수강하고 있는 " + major + " " + studentId + " " + name + "입니다.\n";
+                mailresult += "이번 학기 " + examInfo + " 성적이 제가 예상한 것보다 낮아서 어떤 부분에서 부족했는지 알고 싶어서 연락 드립니다.\n";
+                mailresult += examInfo + " 시험지를 확인하게 해주신다면 앞으로 부족한 부분을 보완하여 공부하도록 하겠습니다.\n";
+                mailresult += "\n바쁘신 와중에 메일 읽어주셔서 감사합니다. \n날이 추운데 감기 조심하시기 바랍니다.\n\n";
+                mailresult += "- " + name + " 드림.";  
+                document.getElementById('mailSubject').value = mailSubject;
+                document.getElementById('mailContent').value = mailresult;
+            }
+            // 예시: 영어일 때
+            else if (selectedLanguage === 'btnradio2') {
+                mailSubject = "[Grade Inquiry] " + major + " " + studentId + " " + name;
+                mailresult = ""
+                mailresult = "- Dear Professor " +  recipientName + ",\n\n";
+                mailresult += "Hello, Professor " + recipientName + ".\n";
+                mailresult += "I am " + studentId + " " + name + ", majoring in " + major + ', currently enrolled in your ' + lecture + " class. \n\n";
+
+                if (examInfo === "중간고사") {
+                    mailresult += "I am reaching out because I received a lower grade than expected in the midterm exam this semester. I would like to understand the areas where I fell short and, \n";
+                    mailresult += "if possible, request to review the midterm exam paper to identify areas for improvement. \n\n";
+                }
+                else if (examInfo === "기말고사") {
+                    mailresult += "I am reaching out because I received a lower grade than expected in the finals this semester. I would like to understand the areas where I fell short and, \n";
+                    mailresult += "if possible, request to review the finals paper to identify areas for improvement. \n\n";
+                    
+                }
+                mailresult += "Thank you for taking the time to read my email amid your busy schedule. \n";
+                mailresult += "Please take care and stay warm in this cold weather. \n";
+                mailresult += "Best regards, \n" + name;
+
+                document.getElementById('mailContent').value = mailresult;
+            }
+        }
+
+        function printInput() {
+            var str = document.getElementById('moreDetailInput').value;
+            if (!str){
+                alert("입력하세요");
+            }
+            else{
+                document.getElementById('result').innerText = str;
+                document.getElementById('result').style.display = 'block'; // 결과를 보이게 함
+                document.getElementById('moreDetailInput').value = '';
+
+                document.getElementById('spinner').style.display = 'block';
+                setTimeout(function () {
+                    document.getElementById('spinner').style.display = 'none';
+                    document.getElementById('successinfo').style.display = 'block';
+
+                }, 1500);
+
+                examInfo = str;
+
+                if (language === '한국어') {
+                var mailSubject = "[성적 관련 문의] " + major + " " + studentId + " " + name + " 입니다.";
+                mailresult = "- " + recipientName + " 교수님께. \n\n안녕하세요, " + recipientName + " 교수님.\n\n";
+                mailresult += "저는 " + lecture + "을(를) 수강하고 있는 " + major + " " + studentId + " " + name + " 입니다.\n";
+                mailresult += "이번 학기 " + examInfo + " 성적이 제가 예상한 것보다 낮아서 어떤 부분에서 부족했는지 알고 싶어서 연락 드립니다.\n";
+                mailresult += examInfo + " 시험지를 확인하게 해주신다면 앞으로 부족한 부분을 보완하여 공부하도록 하겠습니다.\n";
+                mailresult += "\n바쁘신 와중에 메일 읽어주셔서 감사합니다. \n날이 추운데 감기 조심하시기 바랍니다.\n\n";
+                mailresult += "- " + name + " 드림.";     
+            }
+                else if (language === '영어') {
+                    var mailSubject = "[Grade Inquiry] " + major + " " + studentId + " " + name;
+                    mailresult = "- Dear Professor " +  recipientName + ",\n\n";
+                    mailresult += "Hello, Professor " + recipientName + ".\n";
+                    mailresult += "I am " + studentId + " " + name + ", majoring in " + major + ', currently enrolled in your ' + lecture + " class. \n\n";
+                    
+                    if (examInfo === "중간고사") {
+                        mailresult += "I am reaching out because I received a lower grade than expected in the midterm exam this semester. I would like to understand the areas where I fell short and, \n";
+                        mailresult += "if possible, request to review the midterm exam paper to identify areas for improvement. \n\n";
+                    }
+                    else if (examInfo === "기말고사") {
+                        mailresult += "I am reaching out because I received a lower grade than expected in the finals this semester. I would like to understand the areas where I fell short and, \n";
+                        mailresult += "if possible, request to review the finals paper to identify areas for improvement. \n\n";
+                        
+                    }
+                    mailresult += "Thank you for taking the time to read my email amid your busy schedule. \n";
+                    mailresult += "Please take care and stay warm in this cold weather. \n";
+                    mailresult += "Best regards, \n" + name;
+                }
+                
+            }
+            function typeWriter(textarea, content, index) {
+                if (index < content.length) {
+                    textarea.value += content.charAt(index);
+                    index++;
+                    setTimeout(function () {
+                    typeWriter(textarea, content, index);
+                    }, 10); // 10밀리초마다 한 글자씩 추가
+                        }
+                        } 
+
+                mailSubjectTextarea = document.getElementById('mailSubject');
+                mailContentTextarea = document.getElementById('mailContent');
+
+                // mailSubjectTextarea.value = mailSubject;
+                mailContentTextarea.value = '';
+                // 문자열을 한 글자씩 나타내는 타이핑 효과 함수 호출
+                setTimeout(function () {
+                    mailSubjectTextarea.value = mailSubject;
+                    typeWriter(mailContentTextarea, mailresult, 0);
+                    }, 2000);
+        }
+    </script>
+</body>
+</html>
